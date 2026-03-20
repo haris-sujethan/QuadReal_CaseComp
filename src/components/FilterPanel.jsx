@@ -8,8 +8,8 @@ import { Check, ChevronDown } from 'lucide-react'
 function FilterPanel({ onResetView }) {
   const { activeFilters, toggleFilter, resetFilters } = useTenantIQStore()
   const [layoutMenuOpen, setLayoutMenuOpen] = useState(false)
-  const [selectedLayout, setSelectedLayout] = useState('Example Mall Layout #1')
-  const layouts = ['Example Mall Layout #1', 'Example Mall Layout #2', 'Example Mall Layout #3']
+  const [selectedLayout, setSelectedLayout] = useState('Capilano Mall')
+  const layouts = ['Capilano Mall', 'Bower Place', 'Willowbrook Shopping Centre']
 
   const unitsWithTenant = floorplan.units.map((unit) => ({ ...unit, ...tenantByUnit[unit.id] }))
 

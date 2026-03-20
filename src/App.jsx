@@ -12,17 +12,7 @@ function App() {
     <div className="app-shell">
       <header className="app-header">
         <div className="brand">
-          <span
-            style={{
-              color: '#FFFFFF',
-              fontSize: '20px',
-              fontWeight: 700,
-              letterSpacing: '-0.02em',
-              fontFamily: '"Inter", "Helvetica Neue", Arial, sans-serif',
-            }}
-          >
-            QuadReal
-          </span>
+          <span className="brand-text">QuadReal</span>
         </div>
       </header>
 
