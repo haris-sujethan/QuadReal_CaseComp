@@ -210,7 +210,6 @@ function App() {
                   <span>Enter unit details using the form</span>
                 </button>
                 <button type="button" className="add-option-card" onClick={() => {}}>
-                  <span className="coming-soon-badge">Coming Soon</span>
                   <Upload size={20} />
                   <strong>Import from SharePoint</strong>
                   <span>Pull unit data from your SharePoint list</span>
