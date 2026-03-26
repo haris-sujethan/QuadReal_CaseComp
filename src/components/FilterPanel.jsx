@@ -1,17 +1,13 @@
 import { useMemo, useState } from 'react'
-import floorplan from '../data/floorplan.json'
-import { tenantByUnit } from '../data/tenants'
 import { useTenantIQStore } from '../store/useStore'
 import { getExpiryTier, shouldHighlight, toMonthYear } from '../utils/threeHelpers'
 import { Check, ChevronDown } from 'lucide-react'
 
 function FilterPanel({ onResetView }) {
-  const { activeFilters, toggleFilter, resetFilters } = useTenantIQStore()
+  const { activeFilters, toggleFilter, resetFilters, units: unitsWithTenant } = useTenantIQStore()
   const [layoutMenuOpen, setLayoutMenuOpen] = useState(false)
   const [selectedLayout, setSelectedLayout] = useState('Capilano Mall')
   const layouts = ['Capilano Mall', 'Bower Place', 'Willowbrook Shopping Centre']
-
-  const unitsWithTenant = floorplan.units.map((unit) => ({ ...unit, ...tenantByUnit[unit.id] }))
 
   const highlightedUnits = useMemo(
     () => unitsWithTenant.filter((unit) => shouldHighlight(unit, activeFilters)),

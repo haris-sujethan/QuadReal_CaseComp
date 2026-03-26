@@ -15,6 +15,13 @@ function buildMergedUnit(unitId) {
   }
 }
 
+function buildAllUnits(userAddedUnits = []) {
+  const baseUnits = floorplan.units
+    .map((unit) => ({ ...unit, ...tenantByUnit[unit.id] }))
+    .filter((unit) => unit?.id && unit?.tenantName)
+  return [...baseUnits, ...userAddedUnits]
+}
+
 export const useTenantIQStore = create((set) => ({
   /** Full selected unit (floorplan + tenant data). Null when drawer closed / none. */
   selectedUnit: null,
@@ -23,6 +30,8 @@ export const useTenantIQStore = create((set) => ({
   selectedCategories: [],
   /** @type {Array<'expiring' | 'underperforming'>} */
   activeFilters: [],
+  userAddedUnits: [],
+  units: buildAllUnits(),
   setSelectedUnit: (unitId) => {
     if (!unitId) {
       set({
@@ -33,15 +42,47 @@ export const useTenantIQStore = create((set) => ({
       })
       return
     }
-    const merged = buildMergedUnit(unitId)
-    if (!merged) return
-    set({
-      selectedUnit: merged,
-      drawerOpen: true,
-      drawerStep: 'info',
-      selectedCategories: [],
+    set((state) => {
+      const merged = buildMergedUnit(unitId) ?? state.userAddedUnits.find((u) => u.id === unitId) ?? null
+      if (!merged) return state
+      return {
+        selectedUnit: merged,
+        drawerOpen: true,
+        drawerStep: 'info',
+        selectedCategories: [],
+      }
     })
   },
+  addUserUnit: (unit) =>
+    set((state) => {
+      const userAddedUnits = [...state.userAddedUnits, unit]
+      return {
+        userAddedUnits,
+        units: buildAllUnits(userAddedUnits),
+        selectedUnit: unit,
+        drawerOpen: true,
+        drawerStep: 'info',
+        selectedCategories: [],
+      }
+    }),
+  removeUserUnit: (unitId) =>
+    set((state) => {
+      const userAddedUnits = state.userAddedUnits.filter((unit) => unit.id !== unitId)
+      const selectedRemoved = state.selectedUnit?.id === unitId
+      return {
+        userAddedUnits,
+        units: buildAllUnits(userAddedUnits),
+        selectedUnit: selectedRemoved ? null : state.selectedUnit,
+        drawerOpen: selectedRemoved ? false : state.drawerOpen,
+        drawerStep: selectedRemoved ? 'info' : state.drawerStep,
+        selectedCategories: selectedRemoved ? [] : state.selectedCategories,
+      }
+    }),
+  setUnitsFromStore: () =>
+    set((state) => {
+      const userAddedUnits = state.userAddedUnits ?? []
+      return { units: buildAllUnits(userAddedUnits) }
+    }),
   setDrawerOpen: (drawerOpen) => set({ drawerOpen }),
   setDrawerStep: (drawerStep) => set({ drawerStep }),
   toggleSelectedCategory: (category) =>

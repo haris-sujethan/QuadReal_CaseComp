@@ -88,6 +88,7 @@ function RecommendationDrawer() {
     setDrawerStep,
     toggleSelectedCategory,
     removeSelectedCategory,
+    removeUserUnit,
   } = useTenantIQStore()
   const [isGenerating, setIsGenerating] = useState(false)
   const [msgIndex, setMsgIndex] = useState(0)
@@ -236,6 +237,18 @@ function RecommendationDrawer() {
               <button type="button" className="find-replacement-btn" onClick={() => setDrawerStep('category')}>
                 Find Replacement Tenants →
               </button>
+              {unit.userAdded ? (
+                <button
+                  type="button"
+                  className="remove-unit-link"
+                  onClick={() => {
+                    const ok = window.confirm(`Remove ${unit.tenantName} from the map?\nThis cannot be undone.`)
+                    if (ok) removeUserUnit(unit.id)
+                  }}
+                >
+                  Remove this unit
+                </button>
+              ) : null}
             </div>
           </>
         ) : null}

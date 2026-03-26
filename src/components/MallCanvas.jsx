@@ -1,10 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
 import gsap from 'gsap'
-import floorplan from '../data/floorplan.json'
-import { tenantByUnit } from '../data/tenants'
 import { useTenantIQStore } from '../store/useStore'
 import { getUnitVisualConfig, toMonthYear } from '../utils/threeHelpers'
 import UnitTooltip from './UnitTooltip'
@@ -25,11 +23,7 @@ function MallCanvas({ onResetViewReady }) {
   const selectedUnitId = useTenantIQStore((state) => state.selectedUnit?.id ?? null)
   const setSelectedUnit = useTenantIQStore((state) => state.setSelectedUnit)
   const activeFilters = useTenantIQStore((state) => state.activeFilters)
-
-  const units = useMemo(
-    () => floorplan.units.map((unit) => ({ ...unit, ...tenantByUnit[unit.id] })),
-    [],
-  )
+  const units = useTenantIQStore((state) => state.units)
 
   useEffect(() => {
     const mount = mountRef.current
@@ -174,7 +168,8 @@ function MallCanvas({ onResetViewReady }) {
 
       if (hoveredMesh) {
         const unitId = hoveredMesh.userData.unitId
-        const tenant = tenantByUnit[unitId]
+        const tenant = units.find((u) => u.id === unitId)
+        if (!tenant) return
         setTooltip({
           visible: true,
           x: event.clientX + 12,
