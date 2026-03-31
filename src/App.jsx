@@ -1,6 +1,6 @@
 import './App.css'
 import { useMemo, useRef, useState } from 'react'
-import { AlertTriangle, Pencil, PlusCircle, Upload, X } from 'lucide-react'
+import { AlertTriangle, Database, Pencil, PlusCircle, Upload, X } from 'lucide-react'
 import MallCanvas from './components/MallCanvas'
 import FilterPanel from './components/FilterPanel'
 import RecommendationDrawer from './components/RecommendationDrawer'
@@ -209,11 +209,16 @@ function App() {
                   <strong>Add Manually</strong>
                   <span>Enter unit details using the form</span>
                 </button>
-                <button type="button" className="add-option-card" onClick={() => {}}>
+                <div className="add-option-card">
+                  <Database size={20} />
+                  <strong>Import from Yardi</strong>
+                  <span>Sync unit data from your Yardi property management system</span>
+                </div>
+                <div className="add-option-card">
                   <Upload size={20} />
                   <strong>Import from SharePoint</strong>
                   <span>Pull unit data from your SharePoint list</span>
-                </button>
+                </div>
               </div>
             ) : (
               <div className="manual-form-wrap">
