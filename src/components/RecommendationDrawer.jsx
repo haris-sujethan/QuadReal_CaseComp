@@ -58,6 +58,12 @@ const CATEGORY_OPTIONS = [
     Icon: Puzzle,
     examples: 'Miniso, Lego, Mastermind Toys',
   },
+  {
+    id: 'Home & Lifestyle',
+    label: 'Home & Lifestyle',
+    Icon: Sparkles,
+    examples: 'Structube, Bouclair, Urban Barn',
+  },
 ]
 
 function getSpaceDescriptor(sqFt) {

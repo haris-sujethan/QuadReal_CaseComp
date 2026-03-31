@@ -24,6 +24,9 @@ function MallCanvas({ onResetViewReady }) {
   const setSelectedUnit = useTenantIQStore((state) => state.setSelectedUnit)
   const activeFilters = useTenantIQStore((state) => state.activeFilters)
   const units = useTenantIQStore((state) => state.units)
+  const selectedLayoutId = useTenantIQStore((state) => state.selectedLayoutId)
+  const layoutConfig = useTenantIQStore((state) => state.layoutConfig)
+  const thirdPartyUnits = useTenantIQStore((state) => state.thirdPartyUnits)
 
   useEffect(() => {
     const mount = mountRef.current
@@ -35,8 +38,7 @@ function MallCanvas({ onResetViewReady }) {
     const width = mount.clientWidth
     const height = mount.clientHeight
     const aspect = width / height
-    /** Tighter default viewport to fill ~70-80% of canvas. */
-    const frustum = 24
+    const frustum = layoutConfig.frustumSize
     const camera = new THREE.OrthographicCamera(
       -frustum * aspect,
       frustum * aspect,
@@ -80,7 +82,7 @@ function MallCanvas({ onResetViewReady }) {
     scene.add(ambient, directional)
 
     const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(48, 30),
+      new THREE.PlaneGeometry(layoutConfig.floorPlaneSize.w, layoutConfig.floorPlaneSize.d),
       new THREE.MeshStandardMaterial({ color: '#D1D5DB', roughness: 0.95 }),
     )
     ground.rotation.x = -Math.PI / 2
@@ -90,6 +92,74 @@ function MallCanvas({ onResetViewReady }) {
     const raycaster = new THREE.Raycaster()
     const pointer = new THREE.Vector2()
     const clickTargets = []
+    const towerMeshes = []
+
+    const createBuildingTexture = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = 256
+      canvas.height = 512
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return null
+      ctx.fillStyle = '#4A6080'
+      ctx.fillRect(0, 0, 256, 512)
+
+      const numFloors = 8
+      const floorHeight = 512 / numFloors
+      ctx.strokeStyle = '#3A5070'
+      ctx.lineWidth = 2
+      for (let f = 0; f < numFloors; f += 1) {
+        ctx.beginPath()
+        ctx.moveTo(0, f * floorHeight)
+        ctx.lineTo(256, f * floorHeight)
+        ctx.stroke()
+      }
+
+      const cols = 5
+      const rows = numFloors
+      const winW = 28
+      const winH = 20
+      const colSpacing = 256 / cols
+      const rowSpacing = floorHeight
+
+      for (let r = 0; r < rows; r += 1) {
+        for (let c = 0; c < cols; c += 1) {
+          const x = c * colSpacing + (colSpacing - winW) / 2
+          const y = r * rowSpacing + (rowSpacing - winH) / 2
+          const lit = Math.random() > 0.3
+          ctx.fillStyle = lit ? '#C8E0FF' : '#2A3A50'
+          ctx.fillRect(x, y, winW, winH)
+          ctx.strokeStyle = '#3A5070'
+          ctx.lineWidth = 1
+          ctx.strokeRect(x, y, winW, winH)
+        }
+      }
+
+      return new THREE.CanvasTexture(canvas)
+    }
+
+    const createParkingTexture = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = 512
+      canvas.height = 512
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return null
+      ctx.fillStyle = '#B8C4CE'
+      ctx.fillRect(0, 0, 512, 512)
+      ctx.strokeStyle = '#A0ADB8'
+      ctx.lineWidth = 1.5
+      for (let x = 0; x < 512; x += 40) {
+        ctx.beginPath()
+        ctx.moveTo(x, 0)
+        ctx.lineTo(x, 512)
+        ctx.stroke()
+      }
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.moveTo(0, 256)
+      ctx.lineTo(512, 256)
+      ctx.stroke()
+      return new THREE.CanvasTexture(canvas)
+    }
 
     units.forEach((unit) => {
       const geometry = new THREE.BoxGeometry(unit.width, unit.height, unit.depth)
@@ -113,8 +183,8 @@ function MallCanvas({ onResetViewReady }) {
       glow.visible = false
       scene.add(glow)
 
-      meshMapRef.current.set(unit.id, { mesh, glow, baseY: unit.height / 2 })
-      clickTargets.push(mesh)
+      meshMapRef.current.set(unit.id, { mesh, glow, baseY: unit.height / 2, interactive: unit.interactive !== false })
+      if (unit.interactive !== false) clickTargets.push(mesh)
 
       const labelEl = document.createElement('div')
       labelEl.className = 'unit-label'
@@ -125,15 +195,93 @@ function MallCanvas({ onResetViewReady }) {
       labelMapRef.current.set(unit.id, labelEl)
     })
 
+    if (selectedLayoutId === 'bower') {
+      const buildingTexture = createBuildingTexture()
+      const towerMaterials = [
+        new THREE.MeshStandardMaterial({ color: 0x3a5070 }),
+        new THREE.MeshStandardMaterial({ color: 0x3a5070 }),
+        new THREE.MeshStandardMaterial({ color: 0x4a6080 }),
+        new THREE.MeshStandardMaterial({ color: 0x2a3a50 }),
+        new THREE.MeshStandardMaterial({ map: buildingTexture ?? undefined, color: 0x4a6080 }),
+        new THREE.MeshStandardMaterial({ color: 0x3a5070 }),
+      ]
+      const tower = new THREE.Mesh(new THREE.BoxGeometry(16, 12, 10), towerMaterials)
+      tower.position.set(0, 7.19, -3)
+      scene.add(tower)
+      towerMeshes.push(tower)
+
+      const roof = new THREE.Mesh(
+        new THREE.BoxGeometry(16.6, 0.3, 10.6),
+        new THREE.MeshStandardMaterial({ color: 0x2a3a50 }),
+      )
+      roof.position.set(0, 13.34, -3)
+      scene.add(roof)
+      towerMeshes.push(roof)
+    }
+
+    if (selectedLayoutId === 'willowbrook') {
+      const leftInner = -17
+      const rightInner = 17
+      const backInner = -10
+      const frontOpen = 6
+      const innerWidth = rightInner - leftInner
+      const innerDepth = frontOpen - backInner
+      const centreX = (leftInner + rightInner) / 2
+      const centreZ = (backInner + frontOpen) / 2
+      const parkingTexture = createParkingTexture()
+      const parking = new THREE.Mesh(
+        new THREE.PlaneGeometry(innerWidth, innerDepth),
+        new THREE.MeshStandardMaterial({ color: 0xb8c4ce, roughness: 0.95, map: parkingTexture ?? undefined }),
+      )
+      parking.rotation.x = -Math.PI / 2
+      parking.position.set(centreX, 0.01, centreZ)
+      scene.add(parking)
+
+      thirdPartyUnits.forEach((unit) => {
+        const outerGeo = new THREE.BoxGeometry(unit.width + 0.1, unit.height + 0.1, unit.depth + 0.1)
+        const outerEdges = new THREE.EdgesGeometry(outerGeo)
+        const outerMat = new THREE.LineBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.4 })
+        const outerLines = new THREE.LineSegments(outerEdges, outerMat)
+        outerLines.position.set(unit.x, unit.height / 2, unit.z)
+        scene.add(outerLines)
+
+        const innerEdges = new THREE.EdgesGeometry(new THREE.BoxGeometry(unit.width, unit.height, unit.depth))
+        const innerMat = new THREE.LineBasicMaterial({ color: 0x475569 })
+        const innerLines = new THREE.LineSegments(innerEdges, innerMat)
+        innerLines.position.set(unit.x, unit.height / 2, unit.z)
+        scene.add(innerLines)
+
+        const fillMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(unit.width, unit.height, unit.depth),
+          new THREE.MeshStandardMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.12 }),
+        )
+        fillMesh.position.set(unit.x, unit.height / 2, unit.z)
+        scene.add(fillMesh)
+
+        const labelEl = document.createElement('div')
+        labelEl.className = 'unit-label'
+        labelEl.textContent = unit.label
+        labelEl.style.fontSize = '11px'
+        labelEl.style.color = '#334155'
+        labelEl.style.fontStyle = 'italic'
+        labelEl.style.fontWeight = '600'
+        labelEl.style.background = 'rgba(255,255,255,0.7)'
+        labelEl.style.padding = '2px 6px'
+        labelEl.style.borderRadius = '4px'
+        labelEl.style.border = '1px solid #CBD5E1'
+        const labelObj = new CSS2DObject(labelEl)
+        labelObj.position.set(unit.x, unit.height + 0.35, unit.z)
+        scene.add(labelObj)
+      })
+    }
+
     const unitBoundingBox = new THREE.Box3()
     clickTargets.forEach((mesh) => unitBoundingBox.expandByObject(mesh))
-    const unitCenter = new THREE.Vector3()
-    unitBoundingBox.getCenter(unitCenter)
-    controls.target.set(unitCenter.x, 0, unitCenter.z)
-    camera.lookAt(unitCenter.x, 0, unitCenter.z)
+    controls.target.set(layoutConfig.cameraTarget.x, layoutConfig.cameraTarget.y, layoutConfig.cameraTarget.z)
+    camera.lookAt(layoutConfig.cameraTarget.x, layoutConfig.cameraTarget.y, layoutConfig.cameraTarget.z)
     defaultViewRef.current = {
       position: { x: camera.position.x, y: camera.position.y, z: camera.position.z },
-      target: { x: unitCenter.x, y: 0, z: unitCenter.z },
+      target: { x: layoutConfig.cameraTarget.x, y: layoutConfig.cameraTarget.y, z: layoutConfig.cameraTarget.z },
       zoom: camera.zoom,
     }
 
@@ -181,6 +329,23 @@ function MallCanvas({ onResetViewReady }) {
           },
         })
       } else {
+        const rect = renderer.domElement.getBoundingClientRect()
+        pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
+        pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
+        raycaster.setFromCamera(pointer, camera)
+        const towerHit = raycaster.intersectObjects(towerMeshes)[0]?.object
+        if (towerHit) {
+          renderer.domElement.style.cursor = 'default'
+          setTooltip({
+            visible: true,
+            x: event.clientX + 12,
+            y: event.clientY + 12,
+            content: {
+              customMessage: 'Residential floors — not part of retail portfolio',
+            },
+          })
+          return
+        }
         setTooltip((current) => ({ ...current, visible: false }))
       }
     }
@@ -216,15 +381,23 @@ function MallCanvas({ onResetViewReady }) {
       renderer.dispose()
       mount.removeChild(renderer.domElement)
       mount.removeChild(labelRenderer.domElement)
+      scene.traverse((obj) => {
+        if (obj.geometry) obj.geometry.dispose?.()
+        if (obj.material) {
+          if (Array.isArray(obj.material)) obj.material.forEach((m) => m.dispose?.())
+          else obj.material.dispose?.()
+        }
+      })
       meshMapRef.current.clear()
       labelMapRef.current.clear()
     }
-  }, [setSelectedUnit, units])
+  }, [setSelectedUnit, units, selectedLayoutId, layoutConfig, thirdPartyUnits])
 
   useEffect(() => {
     units.forEach((unit) => {
       const refs = meshMapRef.current.get(unit.id)
       if (!refs) return
+      if (refs.interactive === false) return
       const visual = getUnitVisualConfig(unit, selectedUnitId === unit.id, activeFilters)
       const meshMat = refs.mesh.material
       meshMat.color.set(visual.color)

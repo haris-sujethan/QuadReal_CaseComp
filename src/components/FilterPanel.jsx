@@ -2,12 +2,19 @@ import { useMemo, useState } from 'react'
 import { useTenantIQStore } from '../store/useStore'
 import { getExpiryTier, shouldHighlight, toMonthYear } from '../utils/threeHelpers'
 import { Check, ChevronDown } from 'lucide-react'
+import { layoutOptions } from '../data/layouts'
 
 function FilterPanel({ onResetView }) {
-  const { activeFilters, toggleFilter, resetFilters, units: unitsWithTenant } = useTenantIQStore()
+  const {
+    activeFilters,
+    toggleFilter,
+    resetFilters,
+    units: unitsWithTenant,
+    selectedLayoutId,
+    setLayout,
+    layoutConfig,
+  } = useTenantIQStore()
   const [layoutMenuOpen, setLayoutMenuOpen] = useState(false)
-  const [selectedLayout, setSelectedLayout] = useState('Capilano Mall')
-  const layouts = ['Capilano Mall', 'Bower Place', 'Willowbrook Shopping Centre']
 
   const highlightedUnits = useMemo(
     () => unitsWithTenant.filter((unit) => shouldHighlight(unit, activeFilters)),
@@ -75,27 +82,28 @@ function FilterPanel({ onResetView }) {
             className="layout-selector-btn"
             onClick={() => setLayoutMenuOpen((open) => !open)}
           >
-            <span>{selectedLayout}</span>
+            <span>{layoutConfig.name}</span>
             <ChevronDown size={14} />
           </button>
           {layoutMenuOpen ? (
             <div className="layout-dropdown">
-              {layouts.map((layout) => (
+              {layoutOptions.map((layout) => (
                 <button
-                  key={layout}
-                  className={layout === selectedLayout ? 'layout-option active' : 'layout-option'}
+                  key={layout.id}
+                  className={layout.id === selectedLayoutId ? 'layout-option active' : 'layout-option'}
                   onClick={() => {
-                    setSelectedLayout(layout)
+                    setLayout(layout.id)
                     setLayoutMenuOpen(false)
                   }}
                 >
-                  <span>{layout}</span>
-                  {layout === selectedLayout ? <Check size={14} /> : null}
+                  <span>{layout.name}</span>
+                  {layout.id === selectedLayoutId ? <Check size={14} /> : null}
                 </button>
               ))}
             </div>
           ) : null}
         </div>
+        <p className="gla-display">{layoutConfig.gla} GLA</p>
 
         <div className="filter-bottom-actions">
           <button type="button" className="reset-btn" onClick={resetFilters}>

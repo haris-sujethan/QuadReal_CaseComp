@@ -1,6 +1,14 @@
 function UnitTooltip({ visible, x, y, content }) {
   if (!visible || !content) return null
 
+  if (content.customMessage) {
+    return (
+      <div className="unit-tooltip" style={{ left: x, top: y }}>
+        <div>{content.customMessage}</div>
+      </div>
+    )
+  }
+
   return (
     <div className="unit-tooltip" style={{ left: x, top: y }}>
       <div>{content.tenantName}</div>

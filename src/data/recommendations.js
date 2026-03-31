@@ -6,6 +6,7 @@ export const recommendationCategories = [
   'Sporting Goods',
   'Toys & Hobbies',
   'Beauty',
+  'Home & Lifestyle',
 ]
 
 export const recommendationsByUnit = {
@@ -116,5 +117,45 @@ export const recommendationsByUnit = {
     { rank: 1, brand: 'Nespresso Kiosk', score: 84, category: 'Electronics', idealSize: '500-900 sq ft', rationale: ['Compact boutique with high revenue density.', 'Experiential retail model drives dwell time.', 'Strong fit for 600 sq ft small-box tenancy.'], dimensions: { financialHealth: 86, expansionMomentum: 82, categoryFit: 83, sizeCompatibility: 85 } },
     { rank: 2, brand: 'Mejuri', score: 78, category: 'Electronics', idealSize: '600-1,000 sq ft', rationale: ['Canadian brand scaling from DTC to malls.', '600-1,000 sq ft inline target range.', 'Social-driven traffic and repeat purchases.'], dimensions: { financialHealth: 77, expansionMomentum: 80, categoryFit: 78, sizeCompatibility: 78 } },
     { rank: 3, brand: 'Koodo Kiosk', score: 73, category: 'Electronics', idealSize: '400-700 sq ft', rationale: ['Smallest kiosk format works at this size.', 'Telecom demand remains resilient.', 'Fast deployment model for quick occupancy.'], dimensions: { financialHealth: 74, expansionMomentum: 72, categoryFit: 74, sizeCompatibility: 75 } },
+  ],
+  BR02: [
+    { rank: 1, brand: 'Coco Fresh Tea & Juice', score: 92, category: 'Food & Beverage', idealSize: '700-1,100 sq ft', rationale: ['Strong suburban momentum with compact inline format.', 'Fits 950 sq ft with low conversion cost.', 'High repeat traffic from youth and commuter mix.'], dimensions: { financialHealth: 90, expansionMomentum: 93, categoryFit: 92, sizeCompatibility: 91 } },
+    { rank: 2, brand: 'Aritea', score: 86, category: 'Food & Beverage', idealSize: '800-1,200 sq ft', rationale: ['Premium tea positioning lifts podium merchandising.', 'Expanding in Western Canada.', 'Good fit for small-format food bay.'], dimensions: { financialHealth: 85, expansionMomentum: 87, categoryFit: 86, sizeCompatibility: 84 } },
+    { rank: 3, brand: 'Booster Juice', score: 79, category: 'Food & Beverage', idealSize: '700-1,100 sq ft', rationale: ['Proven compact format with healthy menu mix.', 'Performs well in mixed-use residential nodes.', 'Moderate capex and fast launch timeline.'], dimensions: { financialHealth: 79, expansionMomentum: 78, categoryFit: 80, sizeCompatibility: 80 } },
+  ],
+  BR04: [
+    { rank: 1, brand: 'Oxford Learning', score: 88, category: 'Apparel', idealSize: '1,000-1,400 sq ft', rationale: ['Education-service concept aligns with family residential catchment.', '1,100 sq ft is right-sized for tutoring pods.', 'Stable recurring revenue model.'], dimensions: { financialHealth: 87, expansionMomentum: 88, categoryFit: 89, sizeCompatibility: 88 } },
+    { rank: 2, brand: 'Sylvan Learning', score: 82, category: 'Apparel', idealSize: '900-1,300 sq ft', rationale: ['Brand recognition and strong after-school demand.', 'Fits podium frontage and local demographics.', 'Balanced operating profile with predictable traffic.'], dimensions: { financialHealth: 82, expansionMomentum: 81, categoryFit: 83, sizeCompatibility: 84 } },
+    { rank: 3, brand: 'Mathnasium', score: 76, category: 'Apparel', idealSize: '1,000-1,500 sq ft', rationale: ['Growing franchise footprint in suburban markets.', 'Easy conversion from existing education fit-out.', 'Good adjacency with residential users above.'], dimensions: { financialHealth: 75, expansionMomentum: 77, categoryFit: 76, sizeCompatibility: 79 } },
+  ],
+  BR05: [
+    { rank: 1, brand: 'Sephora Collection Studio', score: 90, category: 'Beauty', idealSize: '800-1,200 sq ft', rationale: ['Mini-format beauty stores are expanding.', '900 sq ft fits perfectly for high-turnover assortment.', 'Strong attachment sales in mixed-use nodes.'], dimensions: { financialHealth: 91, expansionMomentum: 89, categoryFit: 90, sizeCompatibility: 92 } },
+    { rank: 2, brand: "Kiehl's Boutique", score: 84, category: 'Beauty', idealSize: '700-1,100 sq ft', rationale: ['Premium skincare format works in compact bays.', 'Loyal repeat customer base and strong margin mix.', 'Operationally efficient replacement for underperforming salon use.'], dimensions: { financialHealth: 85, expansionMomentum: 83, categoryFit: 84, sizeCompatibility: 86 } },
+    { rank: 3, brand: 'Benefit Cosmetics Brow Bar+', score: 78, category: 'Beauty', idealSize: '600-1,000 sq ft', rationale: ['Service-led model drives frequent visits.', 'Flexible fit-out and lower occupancy risk.', 'Strong cross-shopping with food and pharmacy users.'], dimensions: { financialHealth: 78, expansionMomentum: 77, categoryFit: 79, sizeCompatibility: 82 } },
+  ],
+  WL04: [
+    { rank: 1, brand: 'Cactus Club Express', score: 88, category: 'Food & Beverage', idealSize: '4,000-5,500 sq ft', rationale: ['Strong BC brand alignment and patio-friendly format.', 'Fits 4,800 sq ft corner restaurant box.', 'Can re-anchor evening traffic for right wing.'], dimensions: { financialHealth: 88, expansionMomentum: 87, categoryFit: 89, sizeCompatibility: 90 } },
+    { rank: 2, brand: 'Earls Local Kitchen', score: 82, category: 'Food & Beverage', idealSize: '4,200-6,000 sq ft', rationale: ['Premium casual concept with resilient suburban performance.', 'Good fit for existing restaurant servicing and utilities.', 'Elevates food mix quality in plaza.'], dimensions: { financialHealth: 83, expansionMomentum: 81, categoryFit: 82, sizeCompatibility: 85 } },
+    { rank: 3, brand: 'The Keg Market Grill', score: 75, category: 'Food & Beverage', idealSize: '4,500-6,500 sq ft', rationale: ['Destination dining draw with strong average check.', 'Requires higher capex but offers category uplift.', 'Best suited if long-term lease secured.'], dimensions: { financialHealth: 77, expansionMomentum: 74, categoryFit: 76, sizeCompatibility: 78 } },
+  ],
+  WL05: [
+    { rank: 1, brand: 'Winners Active', score: 87, category: 'Apparel', idealSize: '2,000-3,000 sq ft', rationale: ['Value fashion remains strong in power centres.', '2,200 sq ft unit supports compact off-price concept.', 'Improves conversion with adjacent traffic anchors.'], dimensions: { financialHealth: 88, expansionMomentum: 86, categoryFit: 87, sizeCompatibility: 85 } },
+    { rank: 2, brand: 'Uniqlo Roadside', score: 82, category: 'Apparel', idealSize: '2,000-2,800 sq ft', rationale: ['Growing off-mall format potential in suburban BC.', 'Strong basics assortment and loyalty dynamics.', 'Right-sized for this left-wing strip location.'], dimensions: { financialHealth: 83, expansionMomentum: 82, categoryFit: 82, sizeCompatibility: 83 } },
+    { rank: 3, brand: 'Old Navy Outlet', score: 76, category: 'Apparel', idealSize: '2,000-3,200 sq ft', rationale: ['Outlet-style assortment fits value-driven catchment.', 'Known traffic pull in open-air plaza formats.', 'Moderate fit-out complexity for quick turnaround.'], dimensions: { financialHealth: 77, expansionMomentum: 75, categoryFit: 76, sizeCompatibility: 79 } },
+  ],
+  WL08: [
+    { rank: 1, brand: 'Specsavers', score: 91, category: 'Beauty', idealSize: '1,200-1,800 sq ft', rationale: ['Optical and health service demand is rising in suburban trade areas.', '1,400 sq ft aligns with compact clinic-retail format.', 'Strong recurring revenue from exams and eyewear cycles.'], dimensions: { financialHealth: 92, expansionMomentum: 90, categoryFit: 91, sizeCompatibility: 89 } },
+    { rank: 2, brand: 'Clearly Studio', score: 84, category: 'Beauty', idealSize: '1,000-1,600 sq ft', rationale: ['Omnichannel brand with native category relevance.', 'Can convert existing optical-adjacent infrastructure.', 'Supports quick lease-up with known local awareness.'], dimensions: { financialHealth: 83, expansionMomentum: 85, categoryFit: 84, sizeCompatibility: 86 } },
+    { rank: 3, brand: 'FYidoctors', score: 78, category: 'Beauty', idealSize: '1,200-1,700 sq ft', rationale: ['Clinic-led operator with stable healthcare traffic.', 'Fits this footprint and neighbourhood demand profile.', 'Moderate growth but high operating stability.'], dimensions: { financialHealth: 80, expansionMomentum: 76, categoryFit: 78, sizeCompatibility: 80 } },
+  ],
+  WL09: [
+    { rank: 1, brand: 'Chatime', score: 90, category: 'Food & Beverage', idealSize: '500-900 sq ft', rationale: ['Bubble tea demand sustains compact kiosk-adjacent units.', '650 sq ft is an excellent fit for high-turnover beverage service.', 'Strong youth traffic overlap with adjacent Starbucks node.'], dimensions: { financialHealth: 88, expansionMomentum: 92, categoryFit: 90, sizeCompatibility: 93 } },
+    { rank: 2, brand: 'Cinnzeo', score: 83, category: 'Food & Beverage', idealSize: '500-850 sq ft', rationale: ['Snack-led concept suited to open-air convenience trips.', 'Low build-out complexity and strong impulse conversion.', 'Good seasonal resilience with coffee adjacency.'], dimensions: { financialHealth: 82, expansionMomentum: 83, categoryFit: 84, sizeCompatibility: 88 } },
+    { rank: 3, brand: 'Jugo Juice', score: 76, category: 'Food & Beverage', idealSize: '450-800 sq ft', rationale: ['Compact healthy beverage concept with low occupancy risk.', 'Can open rapidly with standardized kit-of-parts fit-out.', 'Moderate traffic support from fitness and grocery trips.'], dimensions: { financialHealth: 76, expansionMomentum: 75, categoryFit: 77, sizeCompatibility: 85 } },
+  ],
+  WL10: [
+    { rank: 1, brand: 'Ashley Home Outlet', score: 86, category: 'Home & Lifestyle', idealSize: '3,000-5,000 sq ft', rationale: ['Home value segment fits suburban plaza demand.', '3,800 sq ft aligns with compact furniture format.', 'Improves destination value for back strip.'], dimensions: { financialHealth: 87, expansionMomentum: 85, categoryFit: 86, sizeCompatibility: 84 } },
+    { rank: 2, brand: 'Bouclair', score: 81, category: 'Home & Lifestyle', idealSize: '3,000-4,500 sq ft', rationale: ['Canadian home decor banner with mid-box flexibility.', 'Good adjacency with Winners and Dollarama traffic.', 'Balanced capex and merchandising productivity.'], dimensions: { financialHealth: 80, expansionMomentum: 82, categoryFit: 82, sizeCompatibility: 81 } },
+    { rank: 3, brand: 'Urban Barn Studio', score: 74, category: 'Home & Lifestyle', idealSize: '2,800-4,000 sq ft', rationale: ['Lifestyle furniture format suited to power-centre context.', 'Potential uplift if curated showroom strategy adopted.', 'Moderate expansion pace but strong brand familiarity.'], dimensions: { financialHealth: 74, expansionMomentum: 73, categoryFit: 75, sizeCompatibility: 78 } },
   ],
 }

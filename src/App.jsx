@@ -189,7 +189,7 @@ function App() {
 
       <div className="min-width-banner">
         <AlertTriangle size={14} />
-        <span>TenantIQ is optimized for desktop (1024px+).</span>
+        <span>Smart Leasing is optimized for desktop (1024px+).</span>
       </div>
 
       {addUnitModalOpen ? (
