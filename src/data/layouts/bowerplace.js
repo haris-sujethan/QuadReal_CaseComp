@@ -1,4 +1,19 @@
-export const units = [
+/** Must match tower BoxGeometry in MallCanvas (full-building footprint). */
+export const BOWER_TOWER_WIDTH = 16
+export const BOWER_TOWER_DEPTH = 10
+/** Tower centre Z — same as Mesh position.z for the Bower tower. */
+export const BOWER_TOWER_CENTER_Z = -3
+
+const BOWER_RETAIL_DEPTH = 3
+export const BOWER_RETAIL_HEIGHT = 1.2
+
+/** Storefront strip: back face flush with tower front (street façade). */
+const bowerRetailCenterZ = BOWER_TOWER_CENTER_Z + BOWER_TOWER_DEPTH / 2 - BOWER_RETAIL_DEPTH / 2
+
+/** Relative storefront widths — scaled so the strip spans exactly BOWER_TOWER_WIDTH, edge to edge, no gaps. */
+const REL_WIDTHS = [4, 2.5, 4.5, 2.8, 2.5]
+
+const bowerRetailSpecs = [
   {
     id: 'BR01',
     tenantName: 'Pharmasave',
@@ -11,12 +26,6 @@ export const units = [
     footTrafficIndex: 94,
     anchorProximity: 'Street-facing anchor',
     performanceNote: 'Below average foot traffic, lease ending soon',
-    x: -6.15,
-    z: 3.5,
-    width: 4,
-    depth: 3,
-    height: 1.2,
-    interactive: true,
   },
   {
     id: 'BR02',
@@ -30,12 +39,6 @@ export const units = [
     footTrafficIndex: 88,
     anchorProximity: 'Adjacent to Pharmasave',
     performanceNote: 'Low sq ft revenue vs food category average',
-    x: -2.9,
-    z: 3.5,
-    width: 2.5,
-    depth: 3,
-    height: 1.2,
-    interactive: true,
   },
   {
     id: 'BR03',
@@ -49,12 +52,6 @@ export const units = [
     footTrafficIndex: 112,
     anchorProximity: 'Corner unit',
     performanceNote: 'Top performer, strong dinner traffic',
-    x: 0.6,
-    z: 3.5,
-    width: 4.5,
-    depth: 3,
-    height: 1.2,
-    interactive: true,
   },
   {
     id: 'BR04',
@@ -68,12 +65,6 @@ export const units = [
     footTrafficIndex: 61,
     anchorProximity: 'Mid-strip',
     performanceNote: 'Weak traffic, education category declining',
-    x: 4.25,
-    z: 3.5,
-    width: 2.8,
-    depth: 3,
-    height: 1.2,
-    interactive: true,
   },
   {
     id: 'BR05',
@@ -87,14 +78,30 @@ export const units = [
     footTrafficIndex: 54,
     anchorProximity: 'Mid-strip',
     performanceNote: 'Sales 38% below podium average',
-    x: 6.9,
-    z: 3.5,
-    width: 2.5,
-    depth: 3,
-    height: 1.2,
-    interactive: true,
   },
 ]
+
+function buildBowerRetailUnits() {
+  const sumRel = REL_WIDTHS.reduce((a, b) => a + b, 0)
+  const scale = BOWER_TOWER_WIDTH / sumRel
+  let startX = -BOWER_TOWER_WIDTH / 2
+  return bowerRetailSpecs.map((spec, i) => {
+    const width = REL_WIDTHS[i] * scale
+    const x = startX + width / 2
+    startX += width
+    return {
+      ...spec,
+      x,
+      z: bowerRetailCenterZ,
+      width,
+      depth: BOWER_RETAIL_DEPTH,
+      height: BOWER_RETAIL_HEIGHT,
+      interactive: true,
+    }
+  })
+}
+
+export const units = buildBowerRetailUnits()
 
 export const layoutConfig = {
   id: 'bower',

@@ -6,6 +6,12 @@ import gsap from 'gsap'
 import { useTenantIQStore } from '../store/useStore'
 import { getUnitVisualConfig, toMonthYear } from '../utils/threeHelpers'
 import UnitTooltip from './UnitTooltip'
+import {
+  BOWER_RETAIL_HEIGHT,
+  BOWER_TOWER_CENTER_Z,
+  BOWER_TOWER_DEPTH,
+  BOWER_TOWER_WIDTH,
+} from '../data/layouts/bowerplace'
 
 function MallCanvas({ onResetViewReady }) {
   const mountRef = useRef(null)
@@ -94,6 +100,20 @@ function MallCanvas({ onResetViewReady }) {
     const clickTargets = []
     const towerMeshes = []
 
+    if (selectedLayoutId === 'bower') {
+      const podiumMat = new THREE.MeshStandardMaterial({
+        color: 0xb4bcc6,
+        roughness: 0.62,
+        metalness: 0.06,
+      })
+      const podium = new THREE.Mesh(
+        new THREE.BoxGeometry(BOWER_TOWER_WIDTH, BOWER_RETAIL_HEIGHT, BOWER_TOWER_DEPTH),
+        podiumMat,
+      )
+      podium.position.set(0, BOWER_RETAIL_HEIGHT / 2, BOWER_TOWER_CENTER_Z)
+      scene.add(podium)
+    }
+
     const createBuildingTexture = () => {
       const canvas = document.createElement('canvas')
       canvas.width = 256
@@ -163,12 +183,16 @@ function MallCanvas({ onResetViewReady }) {
 
     units.forEach((unit) => {
       const geometry = new THREE.BoxGeometry(unit.width, unit.height, unit.depth)
+      const isBowerStorefront = selectedLayoutId === 'bower' && unit.id.startsWith('BR')
       const material = new THREE.MeshStandardMaterial({
-        color: '#9CA3AF',
+        color: isBowerStorefront ? '#8f97a3' : '#9CA3AF',
         roughness: 0.6,
         metalness: 0.1,
         transparent: true,
         opacity: 1,
+        ...(isBowerStorefront
+          ? { polygonOffset: true, polygonOffsetFactor: -1.5, polygonOffsetUnits: -1 }
+          : {}),
       })
       const mesh = new THREE.Mesh(geometry, material)
       mesh.position.set(unit.x, unit.height / 2, unit.z)
@@ -177,7 +201,14 @@ function MallCanvas({ onResetViewReady }) {
 
       const glow = new THREE.Mesh(
         new THREE.BoxGeometry(unit.width + 0.28, unit.height + 0.08, unit.depth + 0.28),
-        new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.2 }),
+        new THREE.MeshBasicMaterial({
+          color: '#ffffff',
+          transparent: true,
+          opacity: 0.2,
+          ...(isBowerStorefront
+            ? { polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -1 }
+            : {}),
+        }),
       )
       glow.position.set(unit.x, unit.height / 2 - 0.04, unit.z)
       glow.visible = false
@@ -190,7 +221,19 @@ function MallCanvas({ onResetViewReady }) {
       labelEl.className = 'unit-label'
       labelEl.textContent = unit.tenantName
       const labelObject = new CSS2DObject(labelEl)
-      labelObject.position.set(unit.x, unit.height + 0.4, unit.z)
+      if (selectedLayoutId === 'bower' && unit.id.startsWith('BR')) {
+        const labelOffsetZ = 0.25
+        labelObject.position.set(unit.x, unit.height + 0.15, unit.z + labelOffsetZ)
+        labelEl.dataset.bowerRetailLabel = 'true'
+        labelEl.style.background = 'rgba(255,255,255,0.6)'
+        labelEl.style.padding = '3px 6px'
+        labelEl.style.borderRadius = '4px'
+        labelEl.style.border = '1px solid rgba(203,213,225,0.6)'
+        labelEl.style.fontWeight = '500'
+        labelEl.style.color = '#1F2937'
+      } else {
+        labelObject.position.set(unit.x, unit.height + 0.4, unit.z)
+      }
       scene.add(labelObject)
       labelMapRef.current.set(unit.id, labelEl)
     })
@@ -205,16 +248,18 @@ function MallCanvas({ onResetViewReady }) {
         new THREE.MeshStandardMaterial({ map: buildingTexture ?? undefined, color: 0x4a6080 }),
         new THREE.MeshStandardMaterial({ color: 0x3a5070 }),
       ]
-      const tower = new THREE.Mesh(new THREE.BoxGeometry(16, 12, 10), towerMaterials)
-      tower.position.set(0, 7.19, -3)
+      const towerHalfHeight = 6
+      const towerCenterY = BOWER_RETAIL_HEIGHT + towerHalfHeight
+      const tower = new THREE.Mesh(new THREE.BoxGeometry(BOWER_TOWER_WIDTH, 12, BOWER_TOWER_DEPTH), towerMaterials)
+      tower.position.set(0, towerCenterY, BOWER_TOWER_CENTER_Z)
       scene.add(tower)
       towerMeshes.push(tower)
 
       const roof = new THREE.Mesh(
-        new THREE.BoxGeometry(16.6, 0.3, 10.6),
+        new THREE.BoxGeometry(BOWER_TOWER_WIDTH + 0.6, 0.3, BOWER_TOWER_DEPTH + 0.6),
         new THREE.MeshStandardMaterial({ color: 0x2a3a50 }),
       )
-      roof.position.set(0, 13.34, -3)
+      roof.position.set(0, towerCenterY + towerHalfHeight + 0.15, BOWER_TOWER_CENTER_Z)
       scene.add(roof)
       towerMeshes.push(roof)
     }
@@ -410,7 +455,11 @@ function MallCanvas({ onResetViewReady }) {
       const labelElement = labelMapRef.current.get(unit.id)
       if (labelElement) {
         labelElement.style.opacity = `${visual.labelOpacity}`
-        if (visual.labelMuted === true) {
+        if (selectedLayoutId === 'bower' && labelElement.dataset.bowerRetailLabel === 'true') {
+          labelElement.style.color = '#1F2937'
+          labelElement.style.fontWeight = '500'
+          labelElement.style.textShadow = 'none'
+        } else if (visual.labelMuted === true) {
           labelElement.style.color = '#9CA3AF'
           labelElement.style.fontWeight = '600'
           labelElement.style.textShadow = 'none'
