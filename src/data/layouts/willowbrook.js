@@ -107,7 +107,7 @@ export const thirdPartyUnits = [
 
 export const layoutConfig = {
   id: 'willowbrook',
-  name: 'Willowbrook Shopping Centre',
+  name: 'Strip / Plaza Example',
   gla: '118,000 sq ft',
   floorPlaneSize: { w: 52, d: 44 },
   cameraTarget: { x: 0, y: 0, z: 0 },

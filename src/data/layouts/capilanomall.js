@@ -9,7 +9,7 @@ export const units = floorplan.units.map((unit) => ({
 
 export const layoutConfig = {
   id: 'capilano',
-  name: 'Capilano Mall',
+  name: 'Mall Example',
   gla: '620,000 sq ft',
   floorPlaneSize: { w: 48, d: 30 },
   cameraTarget: { x: 0, y: 0, z: 0 },

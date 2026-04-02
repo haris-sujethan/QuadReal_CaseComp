@@ -105,7 +105,7 @@ export const units = buildBowerRetailUnits()
 
 export const layoutConfig = {
   id: 'bower',
-  name: 'Bower Place',
+  name: 'Residential Retail Example',
   gla: '32,000 sq ft',
   floorPlaneSize: { w: 36, d: 24 },
   cameraTarget: { x: 0, y: 0, z: 0 },

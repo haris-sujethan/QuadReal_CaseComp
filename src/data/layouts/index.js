@@ -21,7 +21,7 @@ export const layoutRegistry = {
 }
 
 export const layoutOptions = [
-  { id: 'capilano', name: 'Capilano Mall' },
-  { id: 'bower', name: 'Bower Place' },
-  { id: 'willowbrook', name: 'Willowbrook Shopping Centre' },
+  { id: 'capilano', name: 'Mall Example' },
+  { id: 'bower', name: 'Residential Retail Example' },
+  { id: 'willowbrook', name: 'Strip / Plaza Example' },
 ]
